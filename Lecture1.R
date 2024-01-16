@@ -107,3 +107,51 @@ plotTree(pr.anolis.tree)
 
 # Drop tips, also called pruning.
 no_pr.anolis_tree <- drop.tip(anolis_tree,pr_species)
+
+# Multiphylo object
+# Input multiple trees, nexus from Mr. Bayes, or other programs.
+
+anolis_trees <- c(anolis_tree,pr.anolis.tree,no_pr.anolis_tree)
+class(anolis_trees)
+
+# Phangorn can be later used to consensus trees. Majority rule consensus can also be done in R.
+
+# PCMs
+anole_data <- read.csv("anole.data.csv")
+head(anole_data)
+# One column is labeled X, because it didn't have a label.
+# row.names=1 specifies the rownames as the first row.
+
+# The data has to be in the rownames. These are morphological traits.
+anole_data <- read.csv("anole.data.csv",row.names=1)
+head(anole_data)
+
+# Habitat specialization. 
+ecomorph_data <- read.csv("ecomorph.csv",row.names=1,stringsAsFactors=TRUE)
+head(ecomorph_data)
+
+# Name check from geiger compares the phylogenetic tree and the data.
+?name.check
+name.check(pr.anolis.tree,anole_data) # Missing
+name.check(anolis_tree,anole_data) # OK! The order should also be checked.
+
+Ntip(anolis_tree)
+dim(anole_data)
+dim(ecomorph_data)
+chk <- name.check(anolis_tree,ecomorph_data)
+summary(chk) # There are no species in the data that aren't in the tree
+str(chk) # Two elements, tree_not_data and data_not_tree
+
+pruned.anolis_tree <-drop.tip(anolis_tree,chk$tree_not_data)
+name.check(pruned.anolis_tree,ecomorph_data)
+
+name.check(pruned.anolis_tree,anole_data)
+# Sample the data based on the tree
+pruned.anole_data <- anole_data[pruned.anolis_tree$tip.label,,drop=FALSE]
+
+head(pruned.anole_data)
+name.check(pruned.anolis_tree,pruned.anole_data)
+
+combined.pruned.anolis <- cbind(pruned.anole_data,ecomorph_data[pruned.anolis_tree$tip.label,,drop=FALSE])
+head(combined.pruned.anolis)
+name.check(pruned.anolis_tree,combined.pruned.anolis)

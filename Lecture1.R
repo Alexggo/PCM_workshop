@@ -155,3 +155,4 @@ name.check(pruned.anolis_tree,pruned.anole_data)
 combined.pruned.anolis <- cbind(pruned.anole_data,ecomorph_data[pruned.anolis_tree$tip.label,,drop=FALSE])
 head(combined.pruned.anolis)
 name.check(pruned.anolis_tree,combined.pruned.anolis)
+

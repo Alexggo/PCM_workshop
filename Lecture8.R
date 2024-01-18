@@ -1,0 +1,103 @@
+library(phytools)
+data(elapidae.tree)
+?elapidae.tree
+
+plotTree(elapidae.tree,ftype="i",fsize=0.5,
+type="arc",arc_height=0.2,lwd=1)
+
+h <- max(nodeHeights(elapidae.tree))
+nodelabels(node=349,pch=21)
+
+?ltt
+
+elapid_ltt <-ltt(elapidae.tree,plot=FALSE)
+plot(elapid_ltt,las=1,bty="n",cex.axis=0.9)
+
+plot(elapid_ltt,las=1,bty="n",cex.axis=0.9,show.tree=TRUE)
+
+plot(elapid_ltt,las=1,bty="n",cex.axis=0.9,show.tree=TRUE,log.lineages=FALSE)
+
+plot(elapid_ltt,las=1,bty="n",cex.axis=0.9,show.tree=TRUE,log.lineages=FALSE,log="y")
+
+# there are 398 elapids
+sampling.f <- Ntip(elapidae.tree)/398
+
+elapid_mccr <- mccr(elapid_ltt,rho=sampling.f,
+nsim=1000)
+
+elapid_mccr
+
+plot(elapid_mccr)
+
+tree.noExtinction <- pbtree(b=0.039,n=100,t=100,method="direct")
+tree.noExtinction
+
+ltt(tree.noExtinction)
+# This should be linear in a semi-log plot if it is pure birth.
+
+tree.withExtinction <- pbtree(b=0.195,d=0.156,
+t=100,n=100,method="direct")
+
+tree.withExtinction
+
+plotTree(tree.withExtinction)
+
+extant<-getExtant(tree.withExtinction,tol= 1e-6)
+head(extant)
+length(extant) #65 (default), 100 with tolerance 1e-6
+
+dev.off()
+
+ltt(tree.withExtinction)
+
+# Best case scenario for evolutionary biology.
+tree.reconstructed <- keep.tip(tree.withExtinction,extant)
+tree.reconstructed
+
+h<-max(nodeHeights(tree.reconstructed))
+h
+
+tree.reconstructed$root.edge<-100-h
+tree.reconstructed<-rootedge.to.singleton(tree.reconstructed)
+plotTree(tree.reconstructed,ftype="off",lwd=1)
+
+dev.off()
+ltt(tree.withExtinction,col="slategrey")
+ltt(tree.reconstructed,add=TRUE)
+
+ltt(tree.noExtinction,add=TRUE,col="blue")
+
+tree.reconstructed<-collapse.singles(tree.reconstructed)
+
+fit.bd(tree.noExtinction)
+fit.bd(tree.reconstructed)
+
+
+fit.bd(elapidae.tree)
+
+tree.reconstructed.sampled <- drop.tip(
+    tree.reconstructed,sample(tree.reconstructed$tip.label,50)
+)
+
+ltt(tree.reconstructed)
+ltt(tree.reconstructed.sampled,add=TRUE,lwd=2)
+
+fit.bd(tree.reconstructed.sampled,rho=0.5)
+fit.bd(elapidae.tree,rho=sampling.f)
+
+
+data("liolaemid.tree")
+plotTree(liolaemid.tree,ftype="i",fsize=0.1,lwd=1,type="fan")
+
+liolaemid.tree
+liolaemid_rho <- Ntip(liolaemid.tree)/341
+
+liolaemid_bd <- fit.bd(liolaemid.tree,rho=liolaemid_rho)
+liolaemid_bd
+
+liolaemid_yule <-fit.yule(liolaemid.tree,rho=liolaemid_rho)
+liolaemid_yule # no extinction rate.
+
+anova(liolaemid_yule,liolaemid_bd)
+
+library(diversitree)

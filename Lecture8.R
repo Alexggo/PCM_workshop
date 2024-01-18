@@ -101,3 +101,9 @@ liolaemid_yule # no extinction rate.
 anova(liolaemid_yule,liolaemid_bd)
 
 library(diversitree)
+bd <- make.bd(liolaemid.tree,sampling.f=liolaemid_rho)
+bd
+bd(c(0.2502,0))
+
+liolaemid_bd.diversitree <- find.mle(bd,x.init=c(1,0.5),method="optim",lower=0)
+liolaemid_bd.diversitree

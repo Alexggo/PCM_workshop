@@ -1,0 +1,10 @@
+Data sources
+============
+
+The geographic range dataset for terrestrial mammals from IUCN is being shared with participants so that they may follow along with demonstrations. However, it is requested that participants please acquire the dataset themselves afterwards via the website (https://www.iucnredlist.org/resources/spatial-data-download), as that is how IUCN would like its datasets acquired. 
+
+ squirrelShapeData.csv: multi-variate mandibular shape data from Zelditch et al. 2017
+ https://doi.org/10.1111/evo.13168
+
+
+roughness_10KMmd_GMTEDmd.tif: Example raster dataset for topographic roughness downloaded from https://www.earthenv.org/topography
